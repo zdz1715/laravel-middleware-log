@@ -1,0 +1,38 @@
+{
+    "name": "zdz/laravel-middleware-log",
+    "description": "laravel middleware for log auto record",
+    "keywords": [
+        "laravel",
+        "middleware",
+        "log",
+        "auto",
+        "laravel-middleware-log"
+    ],
+    "require": {
+        "php": "^7.2",
+        "laravel/framework": "^6.0",
+        "ext-json": "*"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "zdz",
+            "email": "zdzserver@163.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "zdz\\LaravelMiddlewareLog\\": "src"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "zdz\\LaravelMiddlewareLog\\LogServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
