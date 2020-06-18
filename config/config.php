@@ -43,7 +43,7 @@ return [
     // sql日志记录方法
     'sql' => function($event) {
         /**
-         * @var \Illuminate\Database\Events\QueryExecuted $event
+         * @var Illuminate\Database\Events\QueryExecuted $event
          */
         FormatLog::write('db_sql', FormatLog::LOG_APPEND, [
             'connection_name'  => $event->connectionName,

@@ -28,7 +28,7 @@ class FormatLog {
      * 临时记录日志到静态变量中
      * @param string $point
      * @param string $op 写入方式 w 覆盖， a 追加
-     * @param array $context
+     * @param string | array $context
      * @param boolean $jsonStrToArray
      */
     public static function write(string $point, string $op, $context = '', bool $jsonStrToArray = true): void {

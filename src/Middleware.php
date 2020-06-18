@@ -2,6 +2,7 @@
 namespace zdz\LaravelMiddlewareLog;
 
 use Illuminate\Contracts\Config\Repository;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Foundation\Application;
 use zdz\LaravelMiddlewareLog\LogServiceProvider;
 
@@ -40,7 +41,20 @@ abstract class Middleware
         return $this->config->get(LogServiceProvider::CONFIG_FILENAME. '.' .$key, $default);
     }
 
-    public function checkRoute(string $uri): bool {
-        return !in_array($uri, $this->getConfig('exclude_route'));
+    /**
+     * @param string $uri
+     * @return bool
+     * @throws BindingResolutionException
+     */
+    public function checkRoute(): bool {
+        return !in_array($this->getPathInfo(), $this->getConfig('exclude_route'));
+    }
+
+    /**
+     * @return mixed
+     * @throws BindingResolutionException
+     */
+    public function getPathInfo() {
+        return $this->application->make('request')->getPathInfo();
     }
 }
