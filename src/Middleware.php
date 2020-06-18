@@ -55,6 +55,6 @@ abstract class Middleware
      * @throws BindingResolutionException
      */
     public function getPathInfo() {
-        return $this->application->make('request')->getPathInfo();
+        return $this->application->make('request')->path();
     }
 }
