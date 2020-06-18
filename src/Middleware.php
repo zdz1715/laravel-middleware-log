@@ -40,4 +40,7 @@ abstract class Middleware
         return $this->config->get(LogServiceProvider::CONFIG_FILENAME. '.' .$key, $default);
     }
 
+    public function checkRoute(string $uri): bool {
+        return !in_array($uri, $this->getConfig('exclude_route'));
+    }
 }

@@ -18,9 +18,9 @@ class WriteLogMiddleware extends Middleware
     {
         $response =  $next($request);
         // 注册回调事件
-        $handle = $this->getConfig('handle');
-        if (is_callable($handle)) {
-            call_user_func_array($handle, [ $request, $response]);
+        $handleKey = $this->getConfig('handle');
+        if (is_callable($this->getConfig($handleKey))) {
+            call_user_func_array($this->getConfig($handleKey), [ $request, $response]);
         }
         return $response;
     }
