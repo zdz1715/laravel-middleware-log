@@ -2,7 +2,6 @@
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use zdz\LaravelMiddlewareLog\tool\FormatLog;
-use Exception;
 
 return [
     // 忽略的路由数组 示例： /api/test/testLog
@@ -17,7 +16,7 @@ return [
         $responseBody = '';
         $errMsg = '';
         // 有异常时就不记录返回的错误值了
-        if ($response->exception instanceof Exception) {
+        if ($response->exception instanceof \Exception) {
             $errMsg = $response->exception->getMessage();
         } else {
             $responseBody = $response->getContent();
