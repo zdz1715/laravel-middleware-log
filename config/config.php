@@ -4,7 +4,7 @@ use Illuminate\Http\Response;
 use zdz\LaravelMiddlewareLog\tool\FormatLog;
 
 return [
-    // 忽略的路由数组 示例： api/test/Log
+    // 忽略的路由数组 示例： api/test/log
     'exclude_route' => [],
     // 自定义使用方法
     'handle' => 'api',
