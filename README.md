@@ -118,6 +118,21 @@ php artisan vendor:publish --provider="zdz\LaravelMiddlewareLog\LogServiceProvid
 |  &#124;- ms | sql执行时间 |
 | exec_ms | 执行时间，依赖于常量`LARAVEL_START`, 没有则可以在`public/index.php`添加 `define('LARAVEL_START', microtime(true));`|
 
+## 其他操作
+
+可以使用`zdz\LaravelMiddlewareLog\tool\FormatLog`的方法，在代码任何地方增加日志数据里的内容
+
+##### write(string $point, string $op, $context = '', bool $jsonStrToArray = true): void
+
+- $point：字段
+- $op： 写入方式 FormatLog::LOG_WRITE 覆盖写入， FormatLog::LOG_APPEND 追加写入
+- $context： 内容，字符串或者数组
+- $jsonStrToArray：是否将json转换成数组，默认true，避免json嵌套的问题
+
+##### writeMany(array $array): void
+
+- $array 数组，会和日志数据做`array_merge`操作
+ 
 
 
 
