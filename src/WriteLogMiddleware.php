@@ -7,6 +7,18 @@ use Closure;
 
 class WriteLogMiddleware extends Middleware
 {
+
+    public static $levels = [
+        'debug',
+        'info',
+        'notice',
+        'warning',
+        'error',
+        'critical',
+        'alert',
+        'emergency'
+    ];
+
     /**
      * Handle an incoming request.
      *
@@ -22,8 +34,21 @@ class WriteLogMiddleware extends Middleware
         // 注册回调事件
         $handleKey = $this->getConfig('handle');
         if ($this->checkRoute() && is_callable($this->getConfig($handleKey))) {
-            call_user_func_array($this->getConfig($handleKey), [ $request, $response]);
+            call_user_func_array($this->getConfig($handleKey), [
+                $request,
+                $response,
+                $this->getLogLevel()
+            ]);
         }
         return $response;
+    }
+
+    /**
+     * @param string $default
+     * @return mixed|string
+     */
+    public function getLogLevel($default = 'debug') {
+        $level = $this->getConfig('log_level', $default);
+        return in_array($level, self::$levels) ? $level : $default;
     }
 }

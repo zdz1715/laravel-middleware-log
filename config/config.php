@@ -4,12 +4,14 @@ use Illuminate\Http\Response;
 use zdz\LaravelMiddlewareLog\tool\FormatLog;
 
 return [
-    // 忽略的路由数组 示例： api/test/log
+    // 忽略的路由,在此数组中则不会记录日志，示例：['api/test/log']
     'exclude_route' => [],
+    // 日志级别: debug, info, notice, warning, error, critical, alert, emergency
+    'log_level' => 'debug',
     // 自定义使用方法
     'handle' => 'api',
     // api日志常规记录方法
-    'api' => function(Request $request, $response) {
+    'api' => function(Request $request, $response, $levelRecord) {
         /**
          * @var Response $response
          */
@@ -33,7 +35,7 @@ return [
             $execTime = round((microtime(true) - LARAVEL_START) * 1000, 2);
             FormatLog::write('exec_ms', FormatLog::LOG_WRITE, $execTime);
         }
-        \Illuminate\Support\Facades\Log::debug('auto-log', FormatLog::flushData());
+        \Illuminate\Support\Facades\Log::{$levelRecord}('auto-log', FormatLog::flushData());
     },
     // sql日志记录方法
     'sql' => function($event) {
