@@ -6,17 +6,19 @@ use zdz\LaravelMiddlewareLog\tool\FormatLog;
 return [
     // 忽略的路由,在此数组中则不会记录日志，示例：['api/test/log']
     'exclude_route' => [],
+    // 忽略的异常
+    'exclude_exception' => [
+        Illuminate\Validation\ValidationException::class,
+    ],
     // 日志级别: debug, info, notice, warning, error, critical, alert, emergency
     'log_level' => 'debug',
     // 自定义使用方法
     'handle' => 'api',
     // api日志常规记录方法
-    'api' => function(Request $request, $response, $levelRecord) {
+    'api' => function(Request $request, $response, $levelRecord, $exception) {
         /**
          * @var Response $response
          */
-        $responseBody = '';
-        $exception = $response->exception ?? '' ;
         // 有异常时就不记录返回的错误值了
         FormatLog::writeMany([
             'exec_exception' => $exception,

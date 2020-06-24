@@ -37,17 +37,45 @@ class WriteLogMiddleware extends Middleware
             call_user_func_array($this->getConfig($handleKey), [
                 $request,
                 $response,
-                $this->getLogLevel()
+                $this->getLogLevel(),
+                $this->getException($response->excption ?? '', $this->getExcludeException())
             ]);
         }
         return $response;
     }
 
     /**
-     * @param string $default
-     * @return mixed|string
+     * @param $exception
+     * @param array $excludeException
+     * @return string
      */
-    public function getLogLevel($default = 'debug') {
+    public function getException($exception, array $excludeException) {
+        if (!$exception) {
+            return '';
+        }
+
+        foreach ($excludeException as $key => $value) {
+            if ($exception instanceof $value) {
+                return '';
+            }
+        }
+        return $exception;
+    }
+
+
+    /**
+     * @return array
+     */
+    public function getExcludeException(): array {
+        return $this->getConfig('exclude_exception', []);
+    }
+
+
+    /**
+     * @param string $default
+     * @return string
+     */
+    public function getLogLevel($default = 'debug'): string {
         $level = $this->getConfig('log_level', $default);
         return in_array($level, self::$levels) ? $level : $default;
     }

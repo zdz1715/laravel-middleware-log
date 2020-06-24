@@ -92,6 +92,7 @@ php artisan vendor:publish --provider="zdz\LaravelMiddlewareLog\LogServiceProvid
 |      字段     |  类型  |     描述      | 示例 |
 | :-----------: | :----: | :----------: | :----------:  |
 | exclude_route | array |  忽略的路由,在此数组中则不会记录日志 | ['api/test/log'] |
+| exclude_exception | array | 异常忽略数组 |  默认忽略 [Illuminate\Validation\ValidationException::class,] |
 | log_level | string | 日志级别: debug, info, notice, warning, error, critical, alert, emergency | debug |
 | handle | string | 日志记录的方法名称，可以自定义别的名称，然后自定义自己的记录方法 | api |
 | api | callable | 日志记录方法主体 | |
