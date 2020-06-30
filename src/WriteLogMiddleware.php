@@ -38,7 +38,8 @@ class WriteLogMiddleware extends Middleware
                 $request,
                 $response,
                 $this->getLogLevel(),
-                $this->getException($response->exception ?? '', $this->getExcludeException())
+                $this->getException($response->exception ?? '', $this->getExcludeException()),
+                $this->getConfig('log_message')
             ]);
         }
         return $response;
