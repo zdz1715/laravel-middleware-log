@@ -82,35 +82,45 @@ protected $listen = [
     ]
 ];
 ```
-
+<style>
+table th:first-of-type {
+    width: 4cm;
+}
+table th:nth-of-type(2) {
+    width: 150pt;
+}
+table th:nth-of-type(3) {
+    width: 8em;
+}
+</style>
 
 ## Log结构
 > 默认请求一次，记录一条日志，日志为json字符串，结构如下：
 
 |      字段     |     描述      |
 | :---------- | :---------- |
-| <pre>message | 默认为auto-log，修改config里的log_message自定义 |
-| <pre>level | laravel日志级别 |
-| <pre>level_name | laravel日志级别名称 |
-| <pre>channel | |
-| <pre>datetime | 记录时间 |
-| <pre>extra | |
-| <pre>context</pre> | 日志内容，修改config里的log_fields自定义默认记录字段 |
-| <pre>&#124;- exec_exception | 程序运行抛出的异常（内置，不可修改） |
-| <pre>&#124;- exec_ms | 执行时间，依赖于常量`LARAVEL_START`, 没有则可以在`public/index.php`添加 `define('LARAVEL_START', microtime(true));`（内置，不可修改）|
-| <pre>&#124;- full_url | 完整路由 |
-| <pre>&#124;- path_info | 请求路由 |
-| <pre>&#124;- client_ip | 客户端ip |
-| <pre>&#124;- request_method | 请求方法 |
-| <pre>&#124;- request_header | 请求header |
-| <pre>&#124;- request_params | 请求参数 |
-| <pre>&#124;- response_header | 响应header |
-| <pre>&#124;- response_body | 响应结果 |
-| <pre>&#124;- db_sql</pre> | sql语句数组 |
-| <pre>&#124;-- connection_name </pre> | 连接名称 |
-| <pre>&#124;-- sql</pre>  | sql语句 |
-| <pre>&#124;-- bindings</pre> | 绑定参数 |
-| <pre>&#124;-- ms</pre> | sql执行时间 |
+| message | 默认为auto-log，修改config里的log_message自定义 |
+| level | laravel日志级别 |
+| level_name | laravel日志级别名称 |
+| channel | |
+| datetime | 记录时间 |
+| extra | |
+| context | 日志内容，修改config里的log_fields自定义默认记录字段 |
+| &#124;- exec_exception | 程序运行抛出的异常（内置，不可修改） |
+| &#124;- exec_ms | 执行时间，依赖于常量`LARAVEL_START`, 没有则可以在`public/index.php`添加 `define('LARAVEL_START', microtime(true));`（内置，不可修改）|
+| &#124;- full_url | 完整路由 |
+| &#124;- path_info | 请求路由 |
+| &#124;- client_ip | 客户端ip |
+| &#124;- request_method | 请求方法 |
+| &#124;- request_header | 请求header |
+| &#124;- request_params | 请求参数 |
+| &#124;- response_header | 响应header |
+| &#124;- response_body | 响应结果 |
+| &#124;- db_sql | sql语句数组 |
+| &#124;-- connection_name  | 连接名称 |
+| &#124;-- sql  | sql语句 |
+| &#124;-- bindings | 绑定参数 |
+| &#124;-- ms | sql执行时间 |
 
 ## Configuration（可选，自定义配置）
 
