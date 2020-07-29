@@ -1,6 +1,7 @@
 <?php
 namespace zdz\LaravelMiddlewareLog;
 
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 
 class LogServiceProvider extends ServiceProvider
@@ -26,5 +27,10 @@ class LogServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->mergeConfigFrom(__DIR__.'/../config/config.php', self::CONFIG_FILENAME);
+        $config = $this->app['config']->get(self::CONFIG_FILENAME, []);
+
+        $this->app->singleton('LaravelMiddlewareLogHandler', function (Application $app) use ($config){
+            return new $config['handler']($app, $config);
+        });
     }
 }

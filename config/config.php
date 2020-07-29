@@ -1,56 +1,40 @@
 <?php
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use zdz\LaravelMiddlewareLog\tool\FormatLog;
 
 return [
-    // 忽略的路由,在此数组中则不会记录日志，示例：['api/test/log']
-    'exclude_route' => [],
-    // 忽略的异常
+    // 如：不记录api/log/test路由的日志
+    'exclude_route' => [
+        // 'api/log/test'
+    ],
+    // 如：记录api/log/test路由的日志，但不记录log_fields里的response_body数据
+    'exclude_route_fields' => [
+        // 'api/log/test' => [ 'response_body' ]
+    ],
+    // 忽略异常，比如：字段验证，想要如期返回响应内容
     'exclude_exception' => [
         Illuminate\Validation\ValidationException::class,
     ],
+    // 用于异常情况下，记录响应内容为空
+    'response_body_key' => 'response_body',
+    /**
+     * 记录的字段 key => [ 类（request|response）, 方法， 属性 ]
+     * 有以下三种情况：
+     * 1. 'full_url'  => [ 'request', 'fullUrl' ] = $request->fullUrl()
+     * 2. 'response_header' => [ 'response', 'all', 'headers' ] = $response->headers->all()
+     * 3. 'response_header' => [ 'response', '', 'headers' ] = $response->headers
+     */
+    'log_fields' => [
+        'full_url'  => [ 'request', 'fullUrl' ],
+        'path_info' => [ 'request', 'path' ],
+        'client_ip' => [ 'request', 'ip' ],
+        'request_method' => [ 'request', 'getMethod' ],
+        'request_header' => [ 'request', 'header' ],
+        'request_params' => [ 'request', 'all' ],
+        'response_header' => [ 'response', 'all', 'headers' ],
+        'response_body' => [ 'response', 'getContent'],
+    ],
     'log_message' => 'auto-log',
-    // 日志级别: debug, info, notice, warning, error, critical, alert, emergency
     'log_level' => 'debug',
-    // 自定义使用方法
-    'handle' => 'api',
-    // api日志常规记录方法
-    'api' => function(Request $request, $response, $levelRecord, $exception, $message) {
-        /**
-         * @var Response $response
-         */
-        // 有异常时就不记录返回的错误值了
-        FormatLog::writeMany([
-            'exec_exception' => $exception,
-            'full_url' => $request->fullUrl(),
-            'path_info' => $request->path(),
-            'client_ip' => $request->ip(),
-            'request_method' => $request->getMethod(),
-            'request_header' => $request->header(),
-            'request_params' => $request->all(),
-            'response_header' => $response->headers->all(),
-            'response_body' => $exception ? '' : $response->getContent()
-        ]);
-
-        // 执行时间
-        if (defined('LARAVEL_START')) {
-            $execTime = round((microtime(true) - LARAVEL_START) * 1000, 2);
-            FormatLog::write('exec_ms', FormatLog::LOG_WRITE, $execTime);
-        }
-        \Illuminate\Support\Facades\Log::{$levelRecord}($message, FormatLog::flushData());
-    },
-    // sql日志记录方法
-    'sql' => function($event) {
-        /**
-         * @var Illuminate\Database\Events\QueryExecuted $event
-         */
-        FormatLog::write('db_sql', FormatLog::LOG_APPEND, [
-            'connection_name'  => $event->connectionName,
-            'sql' => $event->sql,
-            'bindings' => $event->bindings,
-            'ms' => $event->time
-        ]);
-    }
+    // 修改此handler自定义自己的方法
+    'handler' => zdz\LaravelMiddlewareLog\handle\SingleHandler::class,
 ];
 
