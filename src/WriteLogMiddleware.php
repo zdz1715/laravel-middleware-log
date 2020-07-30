@@ -23,7 +23,6 @@ class WriteLogMiddleware extends Middleware
         $response =  $next($request);
         if ($this->checkRoute()) {
             $this->handler->record(
-                $request,
                 $response,
                 $this->getException($response->exception),
                 $this->getLogFields()

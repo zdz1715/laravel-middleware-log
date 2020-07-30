@@ -105,7 +105,7 @@ protected $listen = [
 | &#124;- request_params | 请求参数 |
 | &#124;- response_header | 响应header |
 | &#124;- response_body | 响应结果 |
-| &#124;- db_sql | sql语句数组 |
+| &#124;- db_sql | sql语句数组(需监听sql语句) |
 | &#124;-- connection_name  | 连接名称 |
 | &#124;-- sql  | sql语句 |
 | &#124;-- bindings | 绑定参数 |
@@ -121,14 +121,14 @@ php artisan vendor:publish --provider="zdz\LaravelMiddlewareLog\LogServiceProvid
 
 |      字段     |  类型  |     描述      | 示例 |
 | :----------- | :---- | :---------- | :----------  |
-| exclude_route | array |  忽略的路由,在此数组中则不会记录日志 | ['api/test/log'] |
-| exclude_route_fields | array | 忽略的路由字段，记录路由日志，但不记录字段里的值 | ['api/test/log' => [ 'response_body' ] ] |
-| exclude_exception | array | 忽略的异常数组 |  默认忽略 [Illuminate\Validation\ValidationException::class,] |
-| response_body_key | string | 用于异常情况下，记录响应内容为空 | 如：response_body，当有异常，则不记录response_body的数据 |
-| log_fields | array | 记录的数据字段 |  key => [ 类（request、response）, 方法， 属性 ] <br>有以下三种情况：<br> 1. 'full_url'  => [ 'request', 'fullUrl' ] = $request->fullUrl() <br>2. 'response_header' => [ 'response', 'all', 'headers' ] = $response->headers->all() <br>3. 'response_header' => [ 'response', '', 'headers' ] = $response->headers | 
-| log_message | string | 日志消息 | auto-log |
-| log_level | string | 日志级别: debug, info, notice, warning, error, critical, alert, emergency | debug |
-| handler | string | 修改此handler自定义自己的方法 | zdz\LaravelMiddlewareLog\handle\SingleHandler::class |
+| exclude_route | array |  忽略的路由,在此数组中则不会记录日志,支持通配符`*` | ['api/log/test', 'web/*'] |
+| exclude_route_fields | array | 忽略的路由字段，记录路由日志，但不记录字段里的值,支持通配符`*` | ['api/log/*' => [ 'response_body' ] ] |
+| exclude_exception | array | 忽略的异常类，如果是此异常则不记录到exec_exception |  默认忽略 [Illuminate\Validation\ValidationException::class,] |
+| exclude_exception_fields | array | 用于抛出异常时，字段内容置为空 | 默认： [ 'response_body' ] |
+| log_fields | array | 记录的数据，可自定义，形式： <br>key => [ 类（request、response）, 方法， 属性 ] |  有以下三种情况：<br> 1. 'full_url'  => [ 'request', 'fullUrl' ] = $request->fullUrl() <br>2. 'response_header' => [ 'response', 'all', 'headers' ] = $response->headers->all() <br>3. 'response_header' => [ 'response', '', 'headers' ] = $response->headers | 
+| log_message | string | 日志消息 | 默认：auto-log |
+| log_level | string | 日志级别: debug, info, notice, warning, error, critical, alert, emergency | 默认：debug |
+| handler | string | 默认：修改此handler自定义自己的方法 | zdz\LaravelMiddlewareLog\handle\SingleHandler::class |
 
 ## 其他操作
 

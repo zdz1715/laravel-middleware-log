@@ -11,20 +11,20 @@ class SingleHandler extends AbstractHandler
 {
 
     /**
-     * @param Request $request
      * @param $response
      * @param $exception
      * @param array $fields
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function record(Request $request, $response, $exception, array $fields): void
+    public function record($response, $exception, array $fields): void
     {
         $logData = array_merge([
             'exec_exception' => $exception,
         ], $this->parseLogFields($fields, $response));
 
-        if ($exception && isset($logData[$this->getConfig('response_body_key')])) {
-            $logData[$this->getConfig('response_body_key')] = '';
+        if ($exception) {
+            foreach ($this->getConfig('exclude_exception_fields', []) as $field) {
+                $logData[$field] = '';
+            }
         }
 
         FormatLog::writeMany($logData);
@@ -32,11 +32,11 @@ class SingleHandler extends AbstractHandler
 
 
 
+
     /**
      * @param $fields
      * @param $response
      * @return array
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     private function parseLogFields($fields, $response) {
         $data = [];
@@ -45,7 +45,7 @@ class SingleHandler extends AbstractHandler
             $method = array_shift($val);
             $attr = array_shift($val);
 
-            $class = $className == 'response' ? $response : $this->app->make($className);
+            $class = $className == 'response' ? $response : $this->request;
 
             if (!is_null($attr) && property_exists($class, $attr)) {
                 $logValue = $class->$attr;

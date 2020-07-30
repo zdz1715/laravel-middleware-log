@@ -1,20 +1,22 @@
 <?php
 
 return [
-    // 如：不记录api/log/test路由的日志
     'exclude_route' => [
-        // 'api/log/test'
+        // 'api/log/test',
+        // 'web/*'
     ],
-    // 如：记录api/log/test路由的日志，但不记录log_fields里的response_body数据
     'exclude_route_fields' => [
-        // 'api/log/test' => [ 'response_body' ]
+        // 'api/log/test' => [ 'response_body' ],
+        // 'web/*' => [ 'response_body' ]
     ],
     // 忽略异常，比如：字段验证，想要如期返回响应内容
     'exclude_exception' => [
         Illuminate\Validation\ValidationException::class,
     ],
-    // 用于异常情况下，记录响应内容为空
-    'response_body_key' => 'response_body',
+    // 用于抛出异常时，字段内容置为空
+    'exclude_exception_fields' => [
+        'response_body'
+    ],
     /**
      * 记录的字段 key => [ 类（request|response）, 方法， 属性 ]
      * 有以下三种情况：

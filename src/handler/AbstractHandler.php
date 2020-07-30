@@ -19,22 +19,33 @@ abstract class AbstractHandler
      */
     protected $app;
 
+    /**
+     * @var Request
+     */
+    protected $request;
+
+    /**
+     * AbstractHandler constructor.
+     * @param Application $app
+     * @param array $config
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     */
     public function __construct(Application $app, $config = [])
     {
         $this->config = $config;
         $this->app = $app;
+        $this->request = $this->app->make('request');
     }
 
 
 
 
     /**
-     * @param Request $request
      * @param $response
      * @param $exception
      * @param array $fields
      */
-    abstract public function record(Request $request, $response, $exception, array $fields): void ;
+    abstract public function record($response, $exception, array $fields): void ;
 
 
 

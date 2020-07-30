@@ -4,6 +4,8 @@ namespace zdz\LaravelMiddlewareLog;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use zdz\LaravelMiddlewareLog\handle\AbstractHandler;
 use zdz\LaravelMiddlewareLog\LogServiceProvider;
 
@@ -24,6 +26,11 @@ abstract class Middleware
      */
     protected $handler;
 
+    /**
+     * @var Request
+     */
+    protected $request;
+
 
     /**
      * Middleware constructor.
@@ -36,6 +43,7 @@ abstract class Middleware
         $this->application = $application;
         $this->config = $config;
         $this->handler = $this->application->make('LaravelMiddlewareLogHandler');
+        $this->request = $this->application->make('request');
     }
 
     /**
@@ -49,20 +57,28 @@ abstract class Middleware
         return $this->config->get(LogServiceProvider::CONFIG_FILENAME. '.' .$key, $default);
     }
 
+
     /**
      * @return bool
-     * @throws BindingResolutionException
      */
     public function checkRoute(): bool {
-        return !in_array($this->getPathInfo(), $this->getConfig('exclude_route', []));
+        return !$this->request->is(...$this->getConfig('exclude_route', []));
     }
 
     /**
-     * @return mixed
-     * @throws BindingResolutionException
+     * @param mixed ...$patterns
+     * @return string 返回匹配的路由名称
      */
-    public function getPathInfo(): string {
-        return $this->application->make('request')->path();
+    public function isRoute(...$patterns): string {
+        $path = $this->request->decodedPath();
+
+        foreach ($patterns as $pattern) {
+            if (Str::is($pattern, $path)) {
+                return $pattern;
+            }
+        }
+
+        return '';
     }
 
     /**
@@ -83,10 +99,11 @@ abstract class Middleware
 
     /**
      * @return array
-     * @throws BindingResolutionException
      */
     public function getExcludeRouteFields(): array {
-        return $this->getConfig('exclude_route_fields')[$this->getPathInfo()] ?? [];
+        $excludeRouteFields = $this->getConfig('exclude_route_fields', []);
+        $pathKey = $this->isRoute(...array_keys($excludeRouteFields));
+        return $excludeRouteFields[$pathKey] ?? [];
     }
 
     /**
