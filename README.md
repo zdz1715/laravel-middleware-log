@@ -82,17 +82,6 @@ protected $listen = [
     ]
 ];
 ```
-<style>
-table th:first-of-type {
-    width: 4cm;
-}
-table th:nth-of-type(2) {
-    width: 150pt;
-}
-table th:nth-of-type(3) {
-    width: 8em;
-}
-</style>
 
 ## Log结构
 > 默认请求一次，记录一条日志，日志为json字符串，结构如下：
