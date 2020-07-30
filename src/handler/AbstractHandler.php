@@ -1,10 +1,12 @@
 <?php
 namespace zdz\LaravelMiddlewareLog\handle;
 
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\Events\QueryExecuted;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Str;
 
 abstract class AbstractHandler
 {
@@ -28,7 +30,7 @@ abstract class AbstractHandler
      * AbstractHandler constructor.
      * @param Application $app
      * @param array $config
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     * @throws BindingResolutionException
      */
     public function __construct(Application $app, $config = [])
     {
@@ -42,10 +44,8 @@ abstract class AbstractHandler
 
     /**
      * @param $response
-     * @param $exception
-     * @param array $fields
      */
-    abstract public function record($response, $exception, array $fields): void ;
+    abstract public function record($response): void ;
 
 
 
@@ -78,4 +78,99 @@ abstract class AbstractHandler
         return $this->config[$key] ?? $default;
     }
 
+
+    /**
+     * @param $response
+     * @param $exception
+     * @return array
+     */
+    protected function parseLogFields($response, $exception) {
+        $data = [];
+        foreach ($this->getLogFields() as $key => $val) {
+            if ($exception && $this->isExcludeExceptionField($key)) {
+                $data[$key] = '';
+                continue;
+            }
+            $className = array_shift($val);
+            $method = array_shift($val);
+            $attr = array_shift($val);
+
+            $class = $className == 'response' ? $response : $this->request;
+
+            if (!is_null($attr) && property_exists($class, $attr)) {
+                $logValue = $class->$attr;
+                if (!is_null($method) && method_exists($logValue, $method)) {
+                    $logValue = $logValue->$method();
+                }
+            } else if (!is_null($method) && method_exists($class, $method)) {
+                $logValue = $class->$method();
+            }
+
+            $data[$key] = $logValue ?? null;
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param $exception
+     * @return string
+     */
+    protected function getException($exception) {
+        if (!$exception) {
+            return '';
+        }
+        foreach ($this->getConfig('exclude_exception', []) as $key => $value) {
+            if ($exception instanceof $value) {
+                return '';
+            }
+        }
+        return $exception;
+    }
+
+
+    /**
+     * @param $field
+     * @return bool
+     */
+    public function isExcludeExceptionField($field) {
+        return in_array($field, $this->getConfig('exclude_exception_fields', []));
+    }
+
+    /**
+     * @param mixed ...$patterns
+     * @return string 返回匹配的路由名称
+     */
+    public function isRoute(...$patterns): string {
+        $path = $this->request->decodedPath();
+
+        foreach ($patterns as $pattern) {
+            if (Str::is($pattern, $path)) {
+                return $pattern;
+            }
+        }
+
+        return '';
+    }
+
+    /**
+     * @return array
+     */
+    public function getExcludeRouteFields(): array {
+        $excludeRouteFields = $this->getConfig('exclude_route_fields', []);
+        $pathKey = $this->isRoute(...array_keys($excludeRouteFields));
+        return $excludeRouteFields[$pathKey] ?? [];
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLogFields() {
+        $excludeRouteFields = $this->getExcludeRouteFields();
+        $logFields = $this->getConfig('log_fields');
+        if ($excludeRouteFields) {
+            return array_diff_key($logFields, array_flip($excludeRouteFields));
+        }
+        return $logFields;
+    }
 }
