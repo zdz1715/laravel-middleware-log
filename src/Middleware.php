@@ -6,7 +6,7 @@ use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use zdz\LaravelMiddlewareLog\handle\AbstractHandler;
+use zdz\LaravelMiddlewareLog\handler\AbstractHandler;
 use zdz\LaravelMiddlewareLog\LogServiceProvider;
 
 abstract class Middleware

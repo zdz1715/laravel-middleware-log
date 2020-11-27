@@ -37,6 +37,6 @@ return [
     'log_message' => 'auto-log',
     'log_level' => 'debug',
     // 修改此handler自定义自己的方法
-    'handler' => zdz\LaravelMiddlewareLog\handle\SingleHandler::class,
+    'handler' => zdz\LaravelMiddlewareLog\handler\SingleHandler::class,
 ];
 
