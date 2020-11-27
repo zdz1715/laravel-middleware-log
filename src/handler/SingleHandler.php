@@ -1,5 +1,5 @@
 <?php
-namespace zdz\LaravelMiddlewareLog\handle;
+namespace zdz\LaravelMiddlewareLog\handler;
 
 
 use Illuminate\Database\Events\QueryExecuted;
