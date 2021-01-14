@@ -83,13 +83,17 @@ abstract class AbstractHandler
 
     /**
      * @param $response
-     * @param $exception
      * @param string $default
      * @return array
      */
-    protected function parseLogFields($response, $exception, $default = "")
+    protected function parseLogFields($response, $default = ""): array
     {
         $data = [];
+        /**
+         * @var Response $response
+         * @var Exception $exception
+         */
+        $exception = $this->getException($response->exception ?? null);
         foreach ($this->getLogFields() as $key => $val) {
             if ($exception && $this->isExcludeExceptionField($key)) {
                 $data[$key] = $default;
@@ -108,7 +112,23 @@ abstract class AbstractHandler
             $data[$key] = $this->execMethod($class, $method) ?? $default;
         }
 
-        return $data;
+        return $this->addFields($data, $response, $exception);
+    }
+
+    private function addFields($array, $response, $exception): array
+    {
+        /**
+         * @var Response $response
+         * @var Exception $exception
+         */
+        if (defined('LARAVEL_START')) {
+            $execTime = round((microtime(true) - LARAVEL_START) * 1000, 2);
+        }
+        return array_merge($array, [
+            '_time_' => date('Y-m-d H:i:s'),
+            'exec_ms' => $execTime ?? 0,
+            'exec_exception' => $exception,
+        ]);
     }
 
     /**

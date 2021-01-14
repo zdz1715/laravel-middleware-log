@@ -16,17 +16,7 @@ class SingleHandler extends AbstractHandler
      */
     public function record($response): void
     {
-        /**
-         * @var Response $response
-         * @var Exception $exception
-         */
-        $exception = $this->getException($response->exception ?? null);
-        $logData = array_merge([
-            'exec_exception' => $exception,
-        ], $this->parseLogFields($response, $exception));
-
-
-        FormatLog::writeMany($logData);
+        FormatLog::writeMany($this->parseLogFields($response));
     }
 
 
@@ -54,11 +44,6 @@ class SingleHandler extends AbstractHandler
      * @param string $message
      */
    public function handle(string $level, string $message): void {
-       // 执行时间
-       if (defined('LARAVEL_START')) {
-           $execTime = round((microtime(true) - LARAVEL_START) * 1000, 2);
-           FormatLog::write('exec_ms', FormatLog::LOG_WRITE, $execTime);
-       }
        \Illuminate\Support\Facades\Log::log($level, $message, FormatLog::flushData());
    }
 }

@@ -97,6 +97,7 @@ protected $listen = [
 | context | 日志内容，修改config里的log_fields自定义默认记录字段 |
 | &#124;- exec_exception | 程序运行抛出的异常（内置，不可修改） |
 | &#124;- exec_ms | 执行时间，依赖于常量`LARAVEL_START`, 没有则可以在`public/index.php`添加 `define('LARAVEL_START', microtime(true));`（内置，不可修改）|
+| &#124;- _time_ | 内置记录时间，格式：Y-m-d H:i:s |
 | &#124;- full_url | 完整路由 |
 | &#124;- path_info | 请求路由 |
 | &#124;- client_ip | 客户端ip |
