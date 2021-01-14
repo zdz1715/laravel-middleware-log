@@ -84,7 +84,8 @@ abstract class AbstractHandler
      * @param $exception
      * @return array
      */
-    protected function parseLogFields($response, $exception) {
+    protected function parseLogFields($response, $exception): array
+    {
         $data = [];
         foreach ($this->getLogFields() as $key => $val) {
             if ($exception && $this->isExcludeExceptionField($key)) {
@@ -113,16 +114,17 @@ abstract class AbstractHandler
     }
 
     /**
-     * @param $exception
-     * @return string
+     * @param ?Exception $exception
+     * @return mixed
      */
-    protected function getException($exception) {
+    protected function getException(?Exception $exception): ?Exception
+    {
         if (!$exception) {
-            return '';
+            return null;
         }
         foreach ($this->getConfig('exclude_exception', []) as $key => $value) {
             if ($exception instanceof $value) {
-                return '';
+                return null;
             }
         }
         return $exception;
@@ -133,7 +135,8 @@ abstract class AbstractHandler
      * @param $field
      * @return bool
      */
-    public function isExcludeExceptionField($field) {
+    public function isExcludeExceptionField($field): bool
+    {
         return in_array($field, $this->getConfig('exclude_exception_fields', []));
     }
 

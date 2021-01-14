@@ -5,6 +5,7 @@ namespace zdz\LaravelMiddlewareLog\handler;
 use Illuminate\Database\Events\QueryExecuted;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Exception;
 use zdz\LaravelMiddlewareLog\tool\FormatLog;
 
 class SingleHandler extends AbstractHandler
@@ -15,6 +16,9 @@ class SingleHandler extends AbstractHandler
      */
     public function record($response): void
     {
+        /**
+         * @var Exception $exception
+         */
         $exception = $this->getException($response->exception);
         $logData = array_merge([
             'exec_exception' => $exception,
