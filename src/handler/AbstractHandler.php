@@ -80,17 +80,19 @@ abstract class AbstractHandler
     }
 
 
+
     /**
      * @param $response
      * @param $exception
+     * @param string $default
      * @return array
      */
-    protected function parseLogFields($response, $exception): array
+    protected function parseLogFields($response, $exception, $default = "")
     {
         $data = [];
         foreach ($this->getLogFields() as $key => $val) {
             if ($exception && $this->isExcludeExceptionField($key)) {
-                $data[$key] = '';
+                $data[$key] = $default;
                 continue;
             }
             $className = array_shift($val);
@@ -100,32 +102,40 @@ abstract class AbstractHandler
             $class = $className == 'response' ? $response : $this->request;
 
             if (!is_null($attr) && property_exists($class, $attr)) {
-                $logValue = $class->$attr;
-                if (!is_null($method) && method_exists($logValue, $method)) {
-                    $logValue = $logValue->$method();
-                }
-            } else if (!is_null($method) && method_exists($class, $method)) {
-                $logValue = $class->$method();
+                $class = $class->$attr;
             }
 
-            $data[$key] = $logValue ?? null;
+            $data[$key] = $this->execMethod($class, $method) ?? $default;
         }
 
         return $data;
     }
 
     /**
-     * @param ?Exception $exception
+     * @param $class
+     * @param $method
      * @return mixed
      */
-    protected function getException(?Exception $exception): ?Exception
+    private function execMethod($class, $method) {
+        if (!is_null($method) && method_exists($class, $method)) {
+            return $class->$method();
+        }
+        return $class;
+    }
+
+    /**
+     * @param Exception|null|string $exception
+     * @param string $default
+     * @return Exception|string
+     */
+    protected function getException($exception, $default = "")
     {
         if (!$exception) {
-            return "";
+            return $default;
         }
         foreach ($this->getConfig('exclude_exception', []) as $key => $value) {
             if ($exception instanceof $value) {
-                return "";
+                return $default;
             }
         }
         return $exception;

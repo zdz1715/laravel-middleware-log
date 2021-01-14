@@ -33,6 +33,7 @@ return [
         'request_params' => [ 'request', 'all' ],
         'response_header' => [ 'response', 'all', 'headers' ],
         'response_body' => [ 'response', 'getContent'],
+        'response_status_code' => [ 'response', 'getStatusCode']
     ],
     'log_message' => 'auto-log',
     'log_level' => 'debug',
