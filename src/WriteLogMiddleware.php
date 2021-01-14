@@ -2,6 +2,7 @@
 namespace zdz\LaravelMiddlewareLog;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Closure;
 
 class WriteLogMiddleware extends Middleware
@@ -17,6 +18,9 @@ class WriteLogMiddleware extends Middleware
      */
     public function handle($request, Closure $next)
     {
+        /**
+         * @var Response $response
+         */
         $response =  $next($request);
         if ($this->checkRoute()) {
             $this->handler->record($response);

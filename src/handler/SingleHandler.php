@@ -17,9 +17,10 @@ class SingleHandler extends AbstractHandler
     public function record($response): void
     {
         /**
+         * @var Response $response
          * @var Exception $exception
          */
-        $exception = $this->getException($response->exception);
+        $exception = $this->getException($response->exception ?? null);
         $logData = array_merge([
             'exec_exception' => $exception,
         ], $this->parseLogFields($response, $exception));
