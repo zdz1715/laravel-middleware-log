@@ -121,11 +121,11 @@ abstract class AbstractHandler
     protected function getException(?Exception $exception): ?Exception
     {
         if (!$exception) {
-            return null;
+            return "";
         }
         foreach ($this->getConfig('exclude_exception', []) as $key => $value) {
             if ($exception instanceof $value) {
-                return null;
+                return "";
             }
         }
         return $exception;
