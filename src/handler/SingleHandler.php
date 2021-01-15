@@ -11,18 +11,6 @@ use zdz\LaravelMiddlewareLog\tool\FormatLog;
 class SingleHandler extends AbstractHandler
 {
 
-    /**
-     * @param $response
-     */
-    public function record($response): void
-    {
-        FormatLog::writeMany($this->parseLogFields($response));
-    }
-
-
-
-
-
 
     /**
      * @param QueryExecuted $event
@@ -39,11 +27,14 @@ class SingleHandler extends AbstractHandler
    }
 
 
+
     /**
      * @param string $level
      * @param string $message
+     * @param $response
      */
-   public function handle(string $level, string $message): void {
+   public function handle(string $level, string $message, $response): void {
+       FormatLog::writeMany($this->parseLogFields($response));
        \Illuminate\Support\Facades\Log::log($level, $message, FormatLog::flushData());
    }
 }

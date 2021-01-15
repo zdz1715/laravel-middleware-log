@@ -16,15 +16,14 @@ class WriteLogMiddleware extends Middleware
      * @param Closure $next
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle($request, Closure $next): Response
     {
         /**
          * @var Response $response
          */
         $response =  $next($request);
         if ($this->checkRoute()) {
-            $this->handler->record($response);
-            $this->handler->handle($this->getConfig('log_level'), $this->getConfig('log_message'));
+            $this->handler->handle($this->getConfig('log_level'), $this->getConfig('log_message'), $response);
         }
         return $response;
     }

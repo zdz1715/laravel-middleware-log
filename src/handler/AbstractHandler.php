@@ -42,24 +42,18 @@ abstract class AbstractHandler
 
 
 
-
-    /**
-     * @param $response
-     */
-    abstract public function record($response): void ;
-
-
-
-    /**
+    /*
      * @param QueryExecuted $event
      */
     abstract public function recordSql(QueryExecuted $event): void ;
 
+
     /**
      * @param string $level
      * @param string $message
+     * @param $response
      */
-    abstract public function handle(string $level, string $message): void ;
+    abstract public function handle(string $level, string $message, $response): void ;
 
     /**
      * @return array
@@ -121,12 +115,10 @@ abstract class AbstractHandler
          * @var Response $response
          * @var Exception $exception
          */
-        if (defined('LARAVEL_START')) {
-            $execTime = round((microtime(true) - LARAVEL_START) * 1000, 2);
-        }
         return array_merge($array, [
             '_time_' => date('Y-m-d H:i:s'),
-            'exec_ms' => $execTime ?? 0,
+            'exec_ms' => defined('LARAVEL_START') ?
+                round((microtime(true) - LARAVEL_START) * 1000, 2) :  0,
             'exec_exception' => $exception,
         ]);
     }
