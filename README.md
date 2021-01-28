@@ -12,8 +12,8 @@ composer require zdz/laravel-middleware-log
 ```
 
 ## Usage
-### 注册中间件
-####  1. 全局注册
+### 注册中间件(选择合适的)
+* 全局注册
 
 在 `app/Http/Kernel.php` 中的 `$middleware` 属性中列出这个中间件
 
@@ -31,7 +31,7 @@ protected $middleware = [
 ];
 ```
 
-#### 2. 中间件组 (推荐,只记录api日志)
+* 中间件组 (推荐,只记录api日志)
 ```php
 // 在 App\Http\Kernel 类中...
 
@@ -55,7 +55,7 @@ protected $middlewareGroups = [
     ];
 ```
 
-#### 3. 单独路由
+* 单独路由
 ```php
 // 在 App\Http\Kernel 类中...
 protected $routeMiddleware = [
